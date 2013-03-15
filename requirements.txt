@@ -2,7 +2,6 @@ Django==1.5
 PyYAML==3.10
 distribute==0.6.15
 dj-database-url==0.2.1
-nltk==2.0.3
 numpy==1.6.2
 psycopg2==2.4.6
 pythonselect==1.3
