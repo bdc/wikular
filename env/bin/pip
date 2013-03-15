@@ -1,4 +1,4 @@
-#!/Users/adambildersee/Dropbox/things/projects/wikular/venv/bin/python
+#!/Users/adambildersee/Dropbox/things/projects/wikular/env/bin/python
 # EASY-INSTALL-ENTRY-SCRIPT: 'pip==1.0.1','console_scripts','pip'
 __requires__ = 'pip==1.0.1'
 import sys
