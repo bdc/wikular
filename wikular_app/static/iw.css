@@ -1,0 +1,25 @@
+body {
+  margin: 0px;
+  overflow: hidden;
+}
+
+div.msgcontainer {
+  padding: 5px;
+  background: #eeeeaa;
+  height: 20px;
+  width: 100%;
+  border-top: 1px solid #cccccc;
+  border-bottom: 1px solid #cccccc;
+  font-family: 'Raleway', sans-serif;
+}
+
+textarea {
+  font-family: 'Donegal One', serif;
+  border: 0px solid black;
+  padding: 8px;
+  margin: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+
