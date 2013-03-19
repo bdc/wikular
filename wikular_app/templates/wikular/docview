@@ -5,12 +5,22 @@
   <link rel='stylesheet' type='text/css' href='iw.css' />
 </head>
 <body>
-  <div id='top' class='msgcontainer'><div id='top_msg'></div></div>
-  <textarea id='content'></textarea>
+  <div id='msg_holder'>
+    <div id='msg'></div>
+  </div>
+  <div id='content_holder'>
+    <textarea id='content'>{% if doc_exists %}{{ doc.text }}{% endif %}</textarea>
+  </div>
+  <div id='sidebar_holder'>
+    <div id='sidebar'></div>
+  </div>
   <script src='jquery-1.8.3.min.js' type='text/javascript'></script>
   <script src='iw.js' type='text/javascript'></script>
   <script type='text/javascript'>
-    var _get = {  };
+    var _get = {  
+      page : '{% if doc_exists %}{{ string_id }}{% endif %}',
+      msg  : '{{ msg }}',
+    };
   </script>
 </body>
 </html>

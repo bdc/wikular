@@ -1,10 +1,14 @@
 $(document).ready(function(){
-  _iw.init();
-  if(_get.page) {
-    _iw.load_page(_get.page);
+  if(_get.page && _get.page !== '') {
+    _iw.init_existing_page(_get.page);
   }
   else {
     _iw.init_new_page();
+  }
+  if(_get.msg && _get.msg !== '') {
+    _iw.notify_top(_get.msg);
+  }
+  else {
     _iw.notify_top('Start typing to create a new page.');
   }
   $('#content').keyup(_iw.content_change).focus();
@@ -16,14 +20,17 @@ $(document).ready(function(){
 });
 
 _iw = {}
-_iw.init = function() {
+_iw.init_existing_page = function(page_id) {
+  _iw['page_id'] = page_id;
+  _iw['old_content'] = $('#content').html();
+  _iw['sync_status'] = 'synced';
+  window.history.replaceState(null, null, page_id);
+}
+_iw.init_new_page = function() {
   _iw['page_id'] = null;
   _iw['old_content'] = '';
   _iw['sync_status'] = 'synced';
   $('#content').html('');
-}
-_iw.init_new_page = function() {
-  _iw.init();
   window.history.replaceState(null, null, '.');
 }
 _iw.poll = function() {
@@ -33,7 +40,7 @@ _iw.poll = function() {
   }
   if(_iw['page_id'] && _iw['sync_status'] === 'synced' && _iw['old_content'] === $('#content').val()) {
     $.ajax({
-      url: 'iw.py',
+      url: '_cmd',
       data: { action: 'get_page', page_id: _iw['page_id']},
       dataType: 'json',
       type: 'POST',
@@ -64,7 +71,10 @@ _iw.content_change = function(e) {
   _iw.set_title();
 }
 _iw.set_content_size = function() {
-  $('#content').height(window.innerHeight - $('#content').position().top);
+  return; // TODO
+  $('#top').outerWidth(window.innerWidth);
+  $('#content').outerHeight(window.innerHeight - $('#content').position().top);
+  $('#content').outerWidth (window.innerWidth);
 }
 _iw.try_save = function() {
   if(_iw['sync_status'] === 'synced' && _iw['old_content'] !== $('#content').val()) {
@@ -76,7 +86,7 @@ _iw.try_save = function() {
 }
 _iw.load_page = function(page_id) {
   $.ajax({
-    url: 'iw.py',
+    url: '_cmd',
     data: { action: 'get_page', page_id: page_id },
     dataType: 'json',
     type: 'POST',
@@ -108,7 +118,7 @@ _iw.save_page = function() {
     return;
   }
   $.ajax({
-    url: 'iw.py',
+    url: '_cmd',
     data: { 
       action: 'sync_page', 
       page_id: _iw['page_id'], 
@@ -136,7 +146,7 @@ _iw.save_page = function() {
 }
 _iw.save_new_page = function() {
   $.ajax({
-    url: 'iw.py',
+    url: '_cmd',
     data: { action: 'new_page', content: $('#content').val() },
     dataType: 'json',
     type: 'POST',
@@ -163,7 +173,7 @@ _iw.notify_top = function(str) {
     window.history.replaceState(null, null, (((_iw['page_id']?_iw['page_id']:'') + (str?' '+str:'')).replace(/ /g,'_')));
   $('#top').hide();
   */
-  $('#top_msg').stop().fadeOut(200, function(){$('#top_msg').html(str).fadeIn(200);});
+  $('#msg').stop().fadeOut(200, function(){$('#msg').html(str).fadeIn(200);});
   window.clearTimeout(_iw['notify_top_timeout']);
   if(str !== '')
     _iw['notify_top_timeout'] = window.setTimeout(function(){_iw.notify_top('');}, 4000);

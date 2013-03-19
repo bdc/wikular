@@ -3,19 +3,39 @@ body {
   overflow: hidden;
 }
 
-div.msgcontainer {
-  padding: 5px;
-  background: #eeeeaa;
-  height: 20px;
+#msg_holder {
+  padding: 0px;
+  background: #eeffaa;
+  height: 30px;
   width: 100%;
   border-top: 1px solid #cccccc;
   border-bottom: 1px solid #cccccc;
   font-family: 'Raleway', sans-serif;
 }
+#msg {
+  margin: 5px;
+}
 
-textarea {
+#sidebar_holder {
+  display: inline-block;
+  padding: 0px;
+  background: #eeeeee;
+  height: 400px; # TODO the rest of the way...?
+  width: 160px;
+  border-left: 1px solid #cccccc;
+}
+#sidebar {
+  margin: 2px;
+}
+
+#content_holder {
+  display: inline-block;
+  height: 400px; # TODO the rest of the way...?
+  width: 400px; # TODO the rest of the way...?
+}
+#content {
   font-family: 'Donegal One', serif;
-  border: 0px solid black;
+  border: 0px;
   padding: 8px;
   margin: 0px;
   height: 100%;

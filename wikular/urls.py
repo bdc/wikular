@@ -13,10 +13,9 @@ urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^wikular_app/', include('wikular_app.urls')),
-    url(r'^$', include('wikular_app.urls')),
+    url(r'^_admin/', include(admin.site.urls)),
     url(r'^(?P<path>.*\.(?:jpg|css|png|js))$', 'django.views.static.serve', {
       'document_root' : settings.STATIC_ROOT,
     }),
+    url(r'', include('wikular_app.urls')),
 )

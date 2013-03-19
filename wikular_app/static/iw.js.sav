@@ -71,7 +71,6 @@ _iw.content_change = function(e) {
   _iw.set_title();
 }
 _iw.set_content_size = function() {
-  return; // TODO
   $('#top').outerWidth(window.innerWidth);
   $('#content').outerHeight(window.innerHeight - $('#content').position().top);
   $('#content').outerWidth (window.innerWidth);
@@ -173,7 +172,7 @@ _iw.notify_top = function(str) {
     window.history.replaceState(null, null, (((_iw['page_id']?_iw['page_id']:'') + (str?' '+str:'')).replace(/ /g,'_')));
   $('#top').hide();
   */
-  $('#msg').stop().fadeOut(200, function(){$('#msg').html(str).fadeIn(200);});
+  $('#top_msg').stop().fadeOut(200, function(){$('#top_msg').html(str).fadeIn(200);});
   window.clearTimeout(_iw['notify_top_timeout']);
   if(str !== '')
     _iw['notify_top_timeout'] = window.setTimeout(function(){_iw.notify_top('');}, 4000);
