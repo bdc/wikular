@@ -9,17 +9,19 @@
     <div id='msg'></div>
   </div>
   <div id='content_holder'>
-    <textarea id='content'>{% if doc_exists %}{{ doc.text }}{% endif %}</textarea>
+    <textarea id='content'></textarea>
   </div>
   <div id='sidebar_holder'>
     <div id='sidebar'></div>
   </div>
   <script src='jquery-1.8.3.min.js' type='text/javascript'></script>
+  <script src='jquery.cookie.js' type='text/javascript'></script>
   <script src='iw.js' type='text/javascript'></script>
   <script type='text/javascript'>
     var _get = {  
       page : '{% if doc_exists %}{{ string_id }}{% endif %}',
       msg  : '{{ msg }}',
+      text : '{{ doc.text | escapejs }}',
     };
   </script>
 </body>

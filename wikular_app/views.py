@@ -1,7 +1,9 @@
 import json
+from django.core.context_processors import csrf
 from django.http import HttpResponse
 from django.shortcuts import render
-from wikular_app.models import Doc
+from wikular_app.models import Doc, DocManager
+import mergepy
 
 def index(request, string_id=''):
   context = {}
@@ -15,10 +17,11 @@ def index(request, string_id=''):
     except:
       context['doc_exists'] = False
       context['msg'] = 'Page not found. Start typing to create a new page'
+  context.update(csrf(request))
   return render(request, 'wikular/docview', context)
 
 def cmd(request):
-  # TODO verify csrf
+
   if request.POST['action'] == 'get_page':
     rsp = { 'status' : 'OK', 'result' : {} }
     try:
@@ -28,14 +31,41 @@ def cmd(request):
     except:
       rsp['result']['valid'] = False
     return HttpResponse(json.dumps(rsp))
+
   if request.POST['action'] == 'new_page':
-    request.POST['content']
-    # { status : '', result : { page_id : '', content : '' } }
+    rsp = { 'status' : 'OK', 'result' : {} }
+    try:
+      doc = Doc(text = request.POST['content'])
+      doc.save()
+      rsp['result']['page_id'] = doc.string_id
+      rsp['result']['content'] = doc.text
+    except:
+      rsp['status'] = 'error'
+      rsp['msg'] = 'Error saving new page.'
+    return HttpResponse(json.dumps(rsp))
+
   if request.POST['action'] == 'sync_page':
-    request.POST['page_id']
-    request.POST['old_content']
-    request.POST['new_content']
-    # { status : '', result : { mergetype '': , content : '' } }
-  return HttpResponse(request.__str__())
+    rsp = { 'status' : 'OK', 'result' : {} }
+    try:
+      doc = Doc.objects.get(string_id=request.POST['page_id'])
+      if doc.text == request.POST['old_content']:
+        if doc.text == request.POST['new_content']:
+          rsp['result']['mergetype'] = ''
+          rsp['result']['content'] = doc.text
+        else:
+          doc.text = request.POST['new_content']
+          doc.save()
+          rsp['result']['mergetype'] = 'ff'
+          rsp['result']['content'] = doc.text
+      else:
+        merge = mergepy.diff3w(request.POST['old_content'], doc.text, request.POST['new_content'])
+        doc.text = merge
+        doc.save()
+        rsp['result']['mergetype'] = '3w'
+        rsp['result']['content'] = doc.text
+    except:
+      rsp['status'] = 'error'
+      rsp['msg'] = 'Error syncing page.'
+  return HttpResponse(json.dumps(rsp))
 
 

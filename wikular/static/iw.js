@@ -1,6 +1,7 @@
+debug_data = {}
 $(document).ready(function(){
   if(_get.page && _get.page !== '') {
-    _iw.init_existing_page(_get.page);
+    _iw.init_existing_page(_get.page, _get.text);
   }
   else {
     _iw.init_new_page();
@@ -20,9 +21,10 @@ $(document).ready(function(){
 });
 
 _iw = {}
-_iw.init_existing_page = function(page_id) {
+_iw.init_existing_page = function(page_id, page_text) {
   _iw['page_id'] = page_id;
-  _iw['old_content'] = $('#content').html();
+  $('#content').val(page_text);
+  _iw['old_content'] = $('#content').val();
   _iw['sync_status'] = 'synced';
   window.history.replaceState(null, null, page_id);
 }
@@ -30,7 +32,7 @@ _iw.init_new_page = function() {
   _iw['page_id'] = null;
   _iw['old_content'] = '';
   _iw['sync_status'] = 'synced';
-  $('#content').html('');
+  $('#content').val('');
   window.history.replaceState(null, null, '.');
 }
 _iw.poll = function() {
@@ -44,6 +46,7 @@ _iw.poll = function() {
       data: { action: 'get_page', page_id: _iw['page_id']},
       dataType: 'json',
       type: 'POST',
+      headers: {'X-CSRFToken': $.cookie('csrftoken')},
     }).done(function(rsp) {
       if(rsp.status !== 'OK') {
         _iw['sync_status'] = 'error';
@@ -53,6 +56,8 @@ _iw.poll = function() {
       if( rsp.result.valid                           &&
           $('#content').val() === _iw['old_content'] &&
           rsp.result.content !== $('#content').val()  ) {
+        debug_data['a_content_val'] = $('#content').val();
+        debug_data['b_rsp_result_content'] = rsp.result.content;
         $('#content').val(rsp.result.content);
         _iw['old_content'] = rsp.result.content;
         _iw.notify_top('Updating with remote edits.');
@@ -71,10 +76,10 @@ _iw.content_change = function(e) {
   _iw.set_title();
 }
 _iw.set_content_size = function() {
-  return; // TODO
-  $('#top').outerWidth(window.innerWidth);
-  $('#content').outerHeight(window.innerHeight - $('#content').position().top);
-  $('#content').outerWidth (window.innerWidth);
+  $('#msg_holder').outerWidth(window.innerWidth);
+  $('#sidebar_holder').outerHeight(window.innerHeight - $('#sidebar_holder').position().top);
+  $('#content_holder').outerHeight(window.innerHeight - $('#content_holder').position().top);
+  $('#content_holder').outerWidth (window.innerWidth  - $('#sidebar_holder').outerWidth() - 4);
 }
 _iw.try_save = function() {
   if(_iw['sync_status'] === 'synced' && _iw['old_content'] !== $('#content').val()) {
@@ -90,6 +95,7 @@ _iw.load_page = function(page_id) {
     data: { action: 'get_page', page_id: page_id },
     dataType: 'json',
     type: 'POST',
+    headers: {'X-CSRFToken': $.cookie('csrftoken')},
   }).done(function(rsp) {
     if(rsp.status !== 'OK') {
       _iw['sync_status'] = 'error';
@@ -117,6 +123,8 @@ _iw.save_page = function() {
     _iw.save_new_page();
     return;
   }
+  debug_data['a_old_content'] = _iw['old_content'];
+  debug_data['b_content_val'] = $('#content').val();
   $.ajax({
     url: '_cmd',
     data: { 
@@ -126,6 +134,7 @@ _iw.save_page = function() {
       new_content: $('#content').val() },
     dataType: 'json',
     type: 'POST',
+    headers: {'X-CSRFToken': $.cookie('csrftoken')},
   }).done(function(rsp) {
     if(rsp.status !== 'OK') {
       _iw['sync_status'] = 'error';
@@ -150,6 +159,7 @@ _iw.save_new_page = function() {
     data: { action: 'new_page', content: $('#content').val() },
     dataType: 'json',
     type: 'POST',
+    headers: {'X-CSRFToken': $.cookie('csrftoken')},
   }).done(function(rsp) {
     if(rsp.status !== 'OK') {
       _iw['sync_status'] = 'error';

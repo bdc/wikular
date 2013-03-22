@@ -20,9 +20,10 @@ body {
   display: inline-block;
   padding: 0px;
   background: #eeeeee;
-  height: 400px; # TODO the rest of the way...?
-  width: 160px;
+  width: 240px;
   border-left: 1px solid #cccccc;
+  float: right;
+  min-height: 300px;
 }
 #sidebar {
   margin: 2px;
@@ -30,8 +31,6 @@ body {
 
 #content_holder {
   display: inline-block;
-  height: 400px; # TODO the rest of the way...?
-  width: 400px; # TODO the rest of the way...?
 }
 #content {
   font-family: 'Donegal One', serif;
