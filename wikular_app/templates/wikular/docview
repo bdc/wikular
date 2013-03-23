@@ -5,6 +5,7 @@
   <link rel='stylesheet' type='text/css' href='iw.css' />
 </head>
 <body>
+
   <div id='msg_holder'>
     <div id='msg'></div>
   </div>
@@ -12,11 +13,19 @@
     <textarea id='content'></textarea>
   </div>
   <div id='sidebar_holder'>
-    <div id='sidebar'></div>
+    <div id='sidebar'>
+      formatting
+      <hr>
+      share
+      <hr>
+      sign in / my docs
+    </div>
   </div>
+
   <script src='jquery-1.8.3.min.js' type='text/javascript'></script>
   <script src='jquery.cookie.js' type='text/javascript'></script>
   <script src='iw.js' type='text/javascript'></script>
+  <script src='sidebar.js' type='text/javascript'></script>
   <script type='text/javascript'>
     var _get = {  
       page : '{% if doc_exists %}{{ string_id }}{% endif %}',

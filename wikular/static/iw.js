@@ -1,4 +1,3 @@
-debug_data = {}
 $(document).ready(function(){
   if(_get.page && _get.page !== '') {
     _iw.init_existing_page(_get.page, _get.text);
@@ -56,8 +55,6 @@ _iw.poll = function() {
       if( rsp.result.valid                           &&
           $('#content').val() === _iw['old_content'] &&
           rsp.result.content !== $('#content').val()  ) {
-        debug_data['a_content_val'] = $('#content').val();
-        debug_data['b_rsp_result_content'] = rsp.result.content;
         $('#content').val(rsp.result.content);
         _iw['old_content'] = rsp.result.content;
         _iw.notify_top('Updating with remote edits.');
@@ -77,9 +74,10 @@ _iw.content_change = function(e) {
 }
 _iw.set_content_size = function() {
   $('#msg_holder').outerWidth(window.innerWidth);
+  $('#sidebar_holder').css('top', $('#msg_holder').outerHeight());
   $('#sidebar_holder').outerHeight(window.innerHeight - $('#sidebar_holder').position().top);
   $('#content_holder').outerHeight(window.innerHeight - $('#content_holder').position().top);
-  $('#content_holder').outerWidth (window.innerWidth  - $('#sidebar_holder').outerWidth() - 4);
+  $('#content_holder').outerWidth (window.innerWidth  - $('#sidebar_holder').outerWidth());
 }
 _iw.try_save = function() {
   if(_iw['sync_status'] === 'synced' && _iw['old_content'] !== $('#content').val()) {
@@ -123,8 +121,6 @@ _iw.save_page = function() {
     _iw.save_new_page();
     return;
   }
-  debug_data['a_old_content'] = _iw['old_content'];
-  debug_data['b_content_val'] = $('#content').val();
   $.ajax({
     url: '_cmd',
     data: { 
@@ -176,13 +172,6 @@ _iw.save_new_page = function() {
   _iw['sync_status'] = 'pending3';
 }
 _iw.notify_top = function(str) {
-  /*// experimental mode of notification which is cool but kind of useless
-  if(str === '' && !_iw['page_id'])
-    window.history.replaceState(null, null, '.');
-  else
-    window.history.replaceState(null, null, (((_iw['page_id']?_iw['page_id']:'') + (str?' '+str:'')).replace(/ /g,'_')));
-  $('#top').hide();
-  */
   $('#msg').stop().fadeOut(200, function(){$('#msg').html(str).fadeIn(200);});
   window.clearTimeout(_iw['notify_top_timeout']);
   if(str !== '')

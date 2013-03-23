@@ -74,9 +74,10 @@ _iw.content_change = function(e) {
 }
 _iw.set_content_size = function() {
   $('#msg_holder').outerWidth(window.innerWidth);
+  $('#sidebar_holder').css('top', $('#msg_holder').outerHeight());
   $('#sidebar_holder').outerHeight(window.innerHeight - $('#sidebar_holder').position().top);
   $('#content_holder').outerHeight(window.innerHeight - $('#content_holder').position().top);
-  $('#content_holder').outerWidth (window.innerWidth  - $('#sidebar_holder').outerWidth() - 4);
+  $('#content_holder').outerWidth (window.innerWidth  - $('#sidebar_holder').outerWidth());
 }
 _iw.try_save = function() {
   if(_iw['sync_status'] === 'synced' && _iw['old_content'] !== $('#content').val()) {
@@ -171,13 +172,6 @@ _iw.save_new_page = function() {
   _iw['sync_status'] = 'pending3';
 }
 _iw.notify_top = function(str) {
-  /*// experimental mode of notification which is cool but kind of useless
-  if(str === '' && !_iw['page_id'])
-    window.history.replaceState(null, null, '.');
-  else
-    window.history.replaceState(null, null, (((_iw['page_id']?_iw['page_id']:'') + (str?' '+str:'')).replace(/ /g,'_')));
-  $('#top').hide();
-  */
   $('#msg').stop().fadeOut(200, function(){$('#msg').html(str).fadeIn(200);});
   window.clearTimeout(_iw['notify_top_timeout']);
   if(str !== '')
